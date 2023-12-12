@@ -18,9 +18,18 @@ public class Utils {
     }
 
     public static void generateResponse(HttpExchange exchange, String response) throws IOException {
+        String clientIp = exchange.getRemoteAddress().getAddress().getHostAddress();
         exchange.getResponseHeaders().set("Content-Type", "application/json");
-        exchange.sendResponseHeaders(200, response.length());
 
+        if (!ValidIPs.IP_LIST.contains(clientIp)) {
+            exchange.sendResponseHeaders(401, response.length());
+            OutputStream os = exchange.getResponseBody();
+            os.write("Access denied!".getBytes());
+            os.close();
+            return;
+        }
+
+        exchange.sendResponseHeaders(200, response.length());
         OutputStream os = exchange.getResponseBody();
         os.write(response.getBytes());
         os.close();

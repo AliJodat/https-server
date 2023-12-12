@@ -12,7 +12,6 @@ public class RunDBQuery implements HttpHandler {
 
     @Override
     public void handle(HttpExchange exchange) throws IOException {
-        String clientIp = exchange.getRemoteAddress().getAddress().getHostAddress();
 
         JdbcClient jdbcClient = DataSourceConnectionService.getJdbcClient();
         List<Map<String, Object>> res = jdbcClient.sql("select * from test").query().listOfRows();
